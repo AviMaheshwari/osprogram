@@ -1,0 +1,171 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct process
+{
+	int id, a_time, b_time, priority;
+	int w_flag,w_time;
+	int t_time;
+}a1[100],a2[100],processtree[100];
+int main()
+{
+	int no_process,i;
+    int t_q;
+    int waiting_time;
+    int j;
+    printf("\n Level 1 : Fixed priority preemptive Scheduling\n Level 2 : Round Robin Scheduling\n\n");
+    printf("Enter Total Number of Processes   : ");
+    scanf("%d",&no_process);
+    printf("Enter Time Quantum for Round Robin in multiple of 2: ");
+    scanf("%d",&t_q);
+    int flag=1;
+    int queue=1;
+    int a=0,b=0;
+    for (i=0;i<no_process;i++) {
+            printf("Process ID       : ");
+            scanf("%d",&a1[i].id);
+            printf("Arrival Time     : ");
+            scanf("%d",&a1[i].a_time);
+            printf("Burst Time       : ");
+            scanf("%d",&a1[i].b_time);
+            printf("Process Priority : ");
+            scanf("%d",&a1[i].priority);
+	        a1[i].w_flag=0;
+            a1[i].w_time=0;
+            a1[i].t_time=0;	
+            processtree[i]=a1[i];
+            a++;
+        }
+    struct process temp;
+     printf("\n\n \t\t\tLEVEL 1 QUEUE IS Running\n\n");
+    for (i=1;i<a;i++)
+        for (j=0;j<a-i;j++) 
+		{
+            if(a1[j].a_time>a1[j+1].a_time) 
+			{
+                temp=a1[j];
+                a1[j]=a1[j+1];
+                a1[j+1]=temp;
+            }
+        }
+        for (i=0;i<a;i++) {
+        printf("\nProcess ID:%d\t Arrival Time:%d \tPriority: %d\tBurst Time:%d", a1[i].id, a1[i].a_time,a1[i].priority, a1[i].b_time);}
+            printf("\n\n");
+int total=a;
+    i=0;
+    int run;
+    for(run=0;;run++){
+        if (a==0) {break;}
+        if (a1[i]. priority>a1[i+1].priority && a1[i+1].a_time==run) {
+            a2[b]=a1[i];
+	    a1[i].priority=-1;	
+            a2[b].a_time=run;
+	    a2[b].w_flag=0;
+            a2[b].priority = -1;
+    
+            printf("\t\t\t\t\t Process %d is shifted to Queue 2\n ", a1[i].id);
+            a--;
+            b++;
+            i++;
+        }
+        if (a1[i].a_time<=run && a1[i].b_time!= 0) {
+		if(a1[i].w_flag==0)
+		{	
+			a1[i].w_time+=((run)-a1[i].a_time);
+			a1[i].w_flag=1;
+		}
+            printf("\nProcess ID:%d  Priority: %d Burst Time %d time %d", a1[i].id, a1[i].priority,a1[i].b_time,run);
+		 a1[i].b_time--;
+            } else if (a1[i].b_time==0) {
+            printf("\t\t\t\t\tProcess %d has completed\n",a1[i].id);
+            a--;
+	        run--;
+            i++;
+        }
+    }
+    int k=0;
+    for (i=0;i<total;i++) {
+	 for(k=0;k<a;k++)
+	{	
+		if(a1[i].id==processtree[k].id)
+		{	
+			processtree[k].w_time=a1[i].w_time;
+		}
+	}
+	}
+	 printf("\n\n");
+    printf("\n\n LEVEL 2 is Running\n\n");
+    for (i=1;i<b;i++) {
+        for (j=0;j<b-i;j++) {
+            if (a2[j].a_time>a2[j+1].a_time) {
+                temp=a2[j];
+                a2[j]=a2[j + 1];
+                a2[j+1]=temp;
+            }
+        }
+    }
+    int total2=b;
+    for (i=0;i<b;i++) {
+        printf("\nProcess ID:%d\t Arrival Time:%d \tBurst Time:%d", a2[i].id,a2[i].a_time,a2[i].b_time);
+    }
+printf("\n\n");
+    i=0;
+    int reset=0;
+    for (run;; run++) 
+     {
+        if (total2==0)
+        {break;}
+	if(a2[i].b_time==0)
+        {
+            printf("\t\t\t\t\tProcess %d has Completed\n", a2[i].id);
+            i++;
+	        run--;
+            total2--;
+            reset=0;
+            continue;
+        }
+        else if (reset==t_q)
+        {
+            printf("\n\n!! Time Quantum Complete of %d seconds !!! \n",reset);	
+            a2[b]=a2[i];
+	    a2[b].a_time=run;	
+        i++;
+	    b++;
+        reset=0;
+        }
+        if (a2[i].a_time<=run && a2[i].b_time!= 0)
+        {
+ 		if(reset==0&&a2[i].id!=a2[i-1].id)
+		{	
+			a2[i].w_time+=(run-a2[i].a_time);
+
+			a2[i].w_flag=1;
+		} 
+		printf("\nProcess ID:%d  Burst Time %d Time Taken %d", a2[i].id,a2[i].b_time,run);
+		a2[i].b_time--;
+        }
+	 else if (a2[i].b_time==0)
+	 {
+
+     
+            printf("\t\t\t\t\t Process %d has Completed\n",a2[i].id);
+            i++;
+	        run--;
+            total2--;
+	        reset = 0;
+        }
+      reset++;
+    }
+ for (i=0;i<b;i++) {
+	 for(k=0;k<a;k++)
+	{	
+		if(a2[i].id==processtree[k].id)
+		{	
+			processtree[k].w_time=a2[i].w_time;
+		}
+	}
+	}
+
+
+}
+    
+
